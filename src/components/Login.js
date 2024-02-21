@@ -167,7 +167,7 @@ const Login = () => {
 
   return (
     <div
-      className="z-5 bg-cover bg-center absolute top-0 left-0 right-0 bottom-0	 "
+      className="bg-cover bg-center absolute top-0 left-0 right-0 bottom-0	 "
       style={{ backgroundImage: `url(${BACKGROUND_IMG})` }}
     >
       <div className="absolute w-screen h-screen backdrop-brightness-50 ">
