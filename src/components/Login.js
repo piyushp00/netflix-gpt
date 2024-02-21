@@ -1,6 +1,7 @@
 import Header from "./Header";
 import { useState } from "react";
 import { BACKGROUND_IMG } from "../utils/constants";
+import { PROFILE_IMG } from "../utils/constants";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -94,17 +95,14 @@ const Login = () => {
       //create a new user -signin/signup
       if (!isSignInForm) {
         //sign up logic
-        // const auth = auth;
         createUserWithEmailAndPassword(auth, email, password, fullName)
           .then((userCredential) => {
             // Signed up
-
             const user = userCredential.user;
             console.log(user);
             updateProfile(user, {
               displayName: fullName,
-              photoURL:
-                "https://occ-0-4409-3646.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABcneBldkGcbgYjPgwnW-HRjOJ93AwX39sxZ2FAj4IPlGtigiVmEXnXGteXkpfXhQLoHHFocRZjxundCZlmgei__FL_RnasQBgkuv.png?r=7c7",
+              photoURL: PROFILE_IMG,
             })
               .then(() => {
                 // Profile updated!
