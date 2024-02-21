@@ -4,12 +4,14 @@ import { BACKGROUND_IMG } from "../utils/constants";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isSignInForm, setSignInForm] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,8 +22,6 @@ const Login = () => {
     password: "",
     newError: null,
   });
-  // const user = auth.currentUser;
-
 
   const validateEmail = (value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,7 +83,7 @@ const Login = () => {
       password: passwordError,
       fullName: fullNameError,
     });
-    
+
     if (
       !(emailError || passwordError) &&
       !(isSignInForm === false && fullNameError)
@@ -101,8 +101,32 @@ const Login = () => {
 
             const user = userCredential.user;
             console.log(user);
-            navigate("/browse");
-            // ...
+            updateProfile(user, {
+              displayName: fullName,
+              photoURL:
+                "https://occ-0-4409-3646.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABcneBldkGcbgYjPgwnW-HRjOJ93AwX39sxZ2FAj4IPlGtigiVmEXnXGteXkpfXhQLoHHFocRZjxundCZlmgei__FL_RnasQBgkuv.png?r=7c7",
+            })
+              .then(() => {
+                // Profile updated!
+                const { uid, email, displayName, photoURL } = auth.currentUser;
+                dispatch(
+                  addUser({
+                    uid: uid,
+                    email: email,
+                    displayName: displayName,
+                    photoURL: photoURL,
+                  })
+                );
+              })
+              .catch((error) => {
+                // An error occurred
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                setErrors((prevState) => ({
+                  ...prevState,
+                  newError: errorCode + "-" + errorMessage,
+                }));
+              });
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -112,7 +136,6 @@ const Login = () => {
               ...prevState,
               newError: errorCode + "-" + errorMessage,
             }));
-            // ..
           });
       } else {
         //sign in logic
@@ -121,8 +144,6 @@ const Login = () => {
             // Signed in
             const user = userCredential.user;
             console.log(user);
-            navigate("/browse");
-            // ...
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -155,7 +176,7 @@ const Login = () => {
         <Header />
 
         <form
-          className="bg-black bg-opacity-85 w-4/12 absolute left-0 right-0 top-1/2 transform -translate-y-1/2 mx-auto text-white rounded-xl p-12"
+          className="bg-black bg-opacity-85 w-2/6 absolute left-0 right-0 top-1/2 transform -translate-y-1/2 mx-auto text-white rounded-md py-12 px-16"
           onSubmit={handleSubmit}
         >
           <h1 className="font-bold text-4xl mb-6">
@@ -174,7 +195,9 @@ const Login = () => {
               />
             )}
             {errors.fullName && (
-              <p className="text-orange-500 font-thin -mt-1">{errors.fullName}</p>
+              <p className="text-orange-500 font-thin -mt-1">
+                {errors.fullName}
+              </p>
             )}
             <input
               className={`p-3 my-3 bg-gray-800/70 rounded-md focus:outline-none focus:ring focus:ring-violet-300 ${
@@ -198,13 +221,17 @@ const Login = () => {
               onChange={handlePasswordChange}
             />
             {errors.password && (
-              <p className="text-orange-500 font-thin -mt-1">{errors.password}</p>
+              <p className="text-orange-500 font-thin -mt-1">
+                {errors.password}
+              </p>
             )}
             <button className="p-3 my-7 bg-red-600 rounded-md">
               {isSignInForm ? "Sign In" : "Sign Up"}
             </button>
             {errors.newError && (
-              <p className="text-orange-500 font-thin -mt-1">{errors.newError}</p>
+              <p className="text-orange-500 font-thin -mt-1">
+                {errors.newError}
+              </p>
             )}
           </div>
           <p className="text-gray-500 mt-5">

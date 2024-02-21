@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { APP_LOGO } from "../utils/constants";
-import { PROFILE_IMG } from "../utils/constants";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
-// import { useDispatch } from "react-redux";
-// import { removeUser } from "../utils/userSlice";
-
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { addUser, removeUser } from "../utils/userSlice";
+import { useEffect } from "react";
 const Header = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = auth.currentUser;
-  console.log(user);
+  const user = useSelector((store) => store.user);
 
   const handleSignOut = () => {
     console.log("pqr");
@@ -18,8 +17,6 @@ const Header = () => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-
-        // dispatch(removeUser());
         navigate("/");
       })
       .catch((error) => {
@@ -31,11 +28,35 @@ const Header = () => {
       });
   };
 
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse");
+        // ...
+      } else {
+        // User is signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+  }, [dispatch, navigate]);
+
   return (
     <div className="absolute w-screen px-6 py-2 bg-gradient-to-b from-black flex justify-between">
       <div>
         <img
-          className="w-56"
+          className={user !== null ? "w-32 mt-2" : "w-56 mt-2"}
           alt="logo"
           src={APP_LOGO}
         />
@@ -43,10 +64,11 @@ const Header = () => {
       {user !== null ? (
         <div className="flex p-2 items-center">
           <img
-            className="w-10 h-10"
-            src={PROFILE_IMG}
+            className="w-8 h-8"
+            src={user.photoURL}
             alt="user_icon"
           />
+          <span className="mx-2">{user.displayName}</span>
           <button
             className="font-bold text-white ml-3  hover:underline"
             onClick={handleSignOut}
