@@ -7,7 +7,7 @@ export const VideoBackground = ({ movieId }) => {
   useMovieTrailer(movieId);
 
   return (
-    <div className="w-full z-10">
+    <div className="w-full">
       {/* absolute top-0 bottom-0 left-0 right-0 */}
       {/* className="w-screen h-4/6 absolute -z-5" */}
 
@@ -15,7 +15,7 @@ export const VideoBackground = ({ movieId }) => {
       className="w-full aspect-video"
         src={
           "https://www.youtube.com/embed/" +
-          trailerVideo?.key + "?autoplay=1&mute=1&end=20"
+          trailerVideo?.key + "?autoplay=1&mute=1&end=20&controls=0"
         }
         title="YouTube video player"
         frameBorder="0"

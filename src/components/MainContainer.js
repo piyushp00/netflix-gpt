@@ -9,12 +9,15 @@ const MainContainer = () => {
   if (!movies) return; //early return
   const mainMovie = movies[11];
 
-    const {original_title, overview, id} = mainMovie
+  const { original_title, overview, id } = mainMovie;
 
   return (
-    <div>
+    <div className="-z-5 relative -mt-24">
       {/* {mainMovie} */}
-      <VideoTitle title={original_title} overview={overview} />
+      <VideoTitle
+        title={original_title}
+        overview={overview}
+      />
       <VideoBackground movieId={id} />
     </div>
   );
