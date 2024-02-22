@@ -31,7 +31,7 @@ const GPTSearchBar = () => {
             type="search"
             id="search"
             class="block w-full p-4 ps-10 text-sm text-white border-black rounded-lg placeholder-gray-400 bg-black focus:ring-gray-600 focus:border-gray-600   "
-            placeholder="Search"
+            placeholder="What would you like to watch today?"
             required
           />
           <button
