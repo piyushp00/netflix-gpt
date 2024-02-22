@@ -12,7 +12,7 @@ const MainContainer = () => {
   const { original_title, overview, id } = mainMovie;
 
   return (
-    <div className="-z-5 relative -mt-24">
+    <div className="-z-5 relative -mt-24 flex">
       {/* {mainMovie} */}
       <VideoTitle
         title={original_title}
