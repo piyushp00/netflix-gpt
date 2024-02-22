@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
 import { useEffect } from "react";
 import { UserIconShimmer } from "./Shimmer";
+
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="absolute w-screen px-6 py-2 bg-gradient-to-b from-black flex justify-between">
+    <div className="fixed w-screen px-6 py-2 bg-gradient-to-b from-black flex justify-between">
       <div>
         <img
           className={user !== null ? "w-32 mt-2" : "w-56 mt-2"}

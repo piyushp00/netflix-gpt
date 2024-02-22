@@ -7,16 +7,15 @@ const MainContainer = () => {
   const movies = useSelector((store) => store.movies?.nowPlayingMovies);
 
   if (!movies) return; //early return
-  const mainMovie = movies[10];
-  console.log(mainMovie);
+  const mainMovie = movies[11];
 
-    const {original_title, overview_title} = mainMovie
+    const {original_title, overview, id} = mainMovie
 
   return (
     <div>
       {/* {mainMovie} */}
-      <VideoTitle title={original_title} overview={original_title} />
-      <VideoBackground />
+      <VideoTitle title={original_title} overview={overview} />
+      <VideoBackground movieId={id} />
     </div>
   );
 };

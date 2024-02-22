@@ -18,3 +18,7 @@ export const API_OPTIONS = {
 
 export const NOW_PLAYING_API =
   "https://api.themoviedb.org/3/movie/now_playing?page=1";
+
+// let movId = null;
+// export const VIDEO_API =
+//   `https://api.themoviedb.org/3/movie/${movId}/videos`;
