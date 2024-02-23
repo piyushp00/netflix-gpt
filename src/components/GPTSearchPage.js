@@ -1,8 +1,9 @@
 import { BACKGROUND_IMG } from "../utils/constants";
 import GPTMovieSuggestions from "./GPTMovieSuggestions";
 import GPTSearchBar from "./GPTSearchBar";
-
 const GPTSearchPage = () => {
+  
+
   return (
     <div className="">
       <div
