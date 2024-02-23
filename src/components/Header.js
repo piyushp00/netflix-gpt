@@ -66,7 +66,7 @@ const Header = () => {
   }
 
   return (
-    <div className="absolute top-0 w-screen px-16 py-2 bg-gradient-to-b from-black flex justify-between z-30 bg-transparent">
+    <div className="fixed top-0 w-screen px-16 py-2 bg-gradient-to-b from-black flex justify-between z-30 bg-transparent">
       <div>
         <img
           className={user !== null ? "w-32 mt-2" : "w-56 mt-2"}

@@ -1,15 +1,57 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { lang } from "../utils/languageConstants";
+import { useRef } from "react";
+import fetchGPTApi from "../hooks/fetchGPTApi";
+import { API_OPTIONS } from "../utils/constants";
+import { addGPTMovieResult } from "../utils/gptSlice";
 
 const GPTSearchBar = () => {
-  const langKey = useSelector(store => store.config.lang)
+  const dispatch = useDispatch();
+  const langKey = useSelector((store) => store.config.lang);
+  const searchText = useRef(null);
+
+  // search movies in the TMDB
+  const searchMovieTMDB = async (movie) => {
+    const data = await fetch(
+      "https://api.themoviedb.org/3/search/movie?query=" +
+        movie +
+        "&include_adult=false&language=en-US&page=1",
+      API_OPTIONS
+    );
+
+    const json = await data.json();
+
+    return json.results;
+  };
+
+  const handleGPTSearchClick = (e) => {
+    e.preventDefault();
+    // console.log(searchText.current.value);
+    //make an api call to to GPT API to get movie result
+
+    const gptQuery =
+      "Act as a Movie Recommendation system and suggest some movies for the query: " +
+      searchText.current.value +
+      ". Only give me names of 5 movies, comma separated like the example result given ahead. Example result: Inception, Dune, Avengers, Final Hour, Interstellar";
+
+    fetchGPTApi(gptQuery).then(async (result) => {
+      const gptMovies = result.choices?.[0].message?.content.split(",");
+      console.log(gptMovies);
+
+      const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
+      //[Promise, Promise, Promise, Promise, Promise,]
+
+      const tmdbResult = await Promise.all(promiseArray);
+      // console.log(tmdbResult);
+
+      dispatch(addGPTMovieResult({movieNames: gptMovies, movieResults: tmdbResult}));
+    });
+  };
+
   return (
     <div className="mt-10 py-36 px-20 flex justify-center">
       <form className="w-7/12">
-        <label
-          
-          className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-        >
+        <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
           Search
         </label>
         <div className="relative">
@@ -33,13 +75,15 @@ const GPTSearchBar = () => {
           <input
             type="search"
             id="search"
-            className="block w-full p-5 ps-10 text-sm text-white border-black rounded-lg placeholder-gray-400 bg-black focus:ring-gray-600 focus:border-gray-600   "
+            ref={searchText}
+            className="block text-wrap w-full p-5 ps-10 pe-28 text-sm text-white border-black rounded-lg placeholder-gray-400 bg-black focus:ring-gray-600 focus:border-gray-600   "
             placeholder={lang[langKey].gptSearchPlaceholder}
             required
           />
           <button
+            onClick={handleGPTSearchClick}
             type="submit"
-            className="text-white absolute end-2.5  bottom-2.5 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            className="text-white absolute end-2.5  bottom-2 bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-6 py-3 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           >
             {lang[langKey].search}
           </button>
